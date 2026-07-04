@@ -2,7 +2,7 @@ exports.getTodos = async (req, res) => {
         res.status(200).json([{name: 'khalid'}])
 }
 
-exports.createTodo = async (req, res) => {
+exports.createTodos = async (req, res) => {
         res.status(200).json([{name: 'khalid'}])
 }
 
