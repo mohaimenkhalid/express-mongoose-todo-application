@@ -1,25 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const todoController = require('../controllers/todo.controller')
 
-router.get('/all', async (req, res) => {
-    res.status(200).json([]);
-})
-
-router.get('/', async (req, res) => {
-    res.status(200).json([]);
-})
-
-router.post('/', async (req, res) => {
+//post multiple todos
+router.post('/all', todoController.getAllTodos)
 
 
-})
+router.route('/')
+    .get(todoController.getTodos)
+    .post(todoController.createTodo)
 
-router.put('/:id', async () => {
-
-})
-
-router.delete('/:id', async (req, res) => {
-
-})
+router.route('/:id')
+    .get(todoController.getTodoById)
+    .put(todoController.updateTodoById)
+    .delete(todoController.deleteTodoById)
 
 module.exports = router;
