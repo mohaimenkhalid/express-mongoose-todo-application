@@ -26,6 +26,16 @@ module.exports = (err, req, res, next) => {
             },
         });
     }
+    //Invalid mongoID
+    if (err.name === "ReferenceError") {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid ID",
+            errors: {
+                [err.path]: "Invalid ObjectId",
+            },
+        });
+    }
 
     return res.status(500).json({
         success: false,

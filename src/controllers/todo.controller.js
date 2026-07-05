@@ -33,7 +33,24 @@ exports.createTodos = async (req, res, next) => {
 }
 
 exports.getTodoById = async (req, res) => {
-        res.status(200).json([{name: 'khalid'}])
+        try {
+                const { id } = req.params;
+                const todo = await Todo.findById(id).select({
+                        __v: 0
+                });
+                if (!todo) {
+                        return res.status(404).json({
+                                success: false,
+                                message: "Todo not found",
+                        });
+                }
+                return res.status(200).json({
+                        success: true,
+                        data: todo,
+                });
+        } catch (error) {
+                next(error)
+        }
 }
 
 exports.updateTodoById = async (req, res) => {
