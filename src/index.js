@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const apiRoutes = require('./routes')
-const errorHandler = require('./middlewares/errorHandler')
+const errorHandler = require('./middlewares/error.middleware')
 //application initialization
 const app = express();
 

@@ -1,7 +1,20 @@
 const Todo = require('../models/todo.model')
 const generateSlug = require('../utils/slugify')
-exports.getTodos = async (req, res) => {
-        res.status(200).json([{name: 'khalid'}])
+
+exports.getTodos = async (req, res, next) => {
+        try {
+                const todos = await Todo.find().select({
+                        __v: 0
+                });
+                //.select("-__v") shorthand
+                return res.status(200).json({
+                        success: true,
+                        message: "Todos fetched successfully",
+                        data: todos,
+                });
+        } catch (error) {
+                next(error)
+        }
 }
 
 exports.createTodos = async (req, res, next) => {
@@ -15,10 +28,8 @@ exports.createTodos = async (req, res, next) => {
                         data: savedTodo,
                 });
         } catch (error) {
-                console.log(error)
                 next(error)
         }
-
 }
 
 exports.getTodoById = async (req, res) => {
