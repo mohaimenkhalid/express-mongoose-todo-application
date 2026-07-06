@@ -69,10 +69,9 @@ exports.updateTodoById = async (req, res, next) => {
                 }
 
                 const updatedTodo = await Todo.findByIdAndUpdate(id, req.body, {
-                        new: true,
+                        returnDocument: "after",
                         runValidators: true
                 })
-                console.log(updatedTodo)
                 if (!updatedTodo) {
                         return res.status(404).json({
                                 success: false,
@@ -93,7 +92,16 @@ exports.updateTodoById = async (req, res, next) => {
 exports.deleteTodoById = async (req, res, next) => {
         try {
                 const {id} = req.params;
-                const deleteTodo = await Todo.findOneAndDelete(id)
+                //Check id valid or not
+                const hasInvalidId = !mongoose.Types.ObjectId.isValid(id)
+
+                if (hasInvalidId) {
+                        return res.status(400).json({
+                                success: false,
+                                message: "Invalid mongo ID",
+                        });
+                }
+                const deleteTodo = await Todo.findByIdAndDelete(id)
                 if (!deleteTodo) {
                         return res.status(404).json({
                                 success: false,
@@ -112,8 +120,7 @@ exports.deleteTodoById = async (req, res, next) => {
 
 exports.deleteMultipleTodos = async (req, res, next) => {
         try {
-                const { ids } = req.body;
-
+                const { ids = [] } = req.body || {};
                 if(!Array.isArray(ids) || !ids.length) {
                         return res.status(400).json({
                                 success: false,
