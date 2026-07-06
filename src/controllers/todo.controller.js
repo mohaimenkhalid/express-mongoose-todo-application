@@ -77,8 +77,24 @@ exports.updateTodoById = async (req, res, next) => {
         }
 }
 
-exports.deleteTodoById = async (req, res) => {
-        res.status(200).json([{name: 'khalid'}])
+exports.deleteTodoById = async (req, res, next) => {
+        try {
+                const {id} = req.params;
+                const deleteTodo = Todo.findOneAndDelete(id)
+                if (!deleteTodo) {
+                        return res.status(404).json({
+                                success: false,
+                                message: "Todo not found",
+                        });
+                }
+
+                return res.status(200).json({
+                        success: true,
+                        message: "Todo deleted successfully",
+                });
+        } catch (error) {
+                next(error)
+        }
 }
 
 
