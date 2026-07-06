@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Todo = require('../models/todo.model')
 const generateSlug = require('../utils/slugify')
 
@@ -92,6 +93,42 @@ exports.deleteTodoById = async (req, res, next) => {
                         success: true,
                         message: "Todo deleted successfully",
                 });
+        } catch (error) {
+                next(error)
+        }
+}
+
+exports.deleteMultipleTodos = async (req, res, next) => {
+        try {
+                const { ids } = req.body;
+
+                if(!Array.isArray(ids) || !ids.length) {
+                        return res.status(400).json({
+                                success: false,
+                                message: 'Please provide the id of the todos array',
+                        })
+                }
+
+                //Check id valid or not
+                const hasInvalidId = ids.some(
+                    (id) => !mongoose.Types.ObjectId.isValid(id)
+                );
+
+                if (hasInvalidId) {
+                        return res.status(400).json({
+                                success: false,
+                                message: "One or more IDs are invalid.",
+                        });
+                }
+
+                const result = await Todo.deleteMany({
+                        _id: { $in: ids },
+                });
+                console.log(result)
+                return res.status(200).json({
+                        success: true,
+                        message: `${result.deletedCount} todo(s) deleted successfully.`,
+                })
         } catch (error) {
                 next(error)
         }
