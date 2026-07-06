@@ -56,11 +56,23 @@ exports.getTodoById = async (req, res, next) => {
 
 exports.updateTodoById = async (req, res, next) => {
         try {
+                if (!req.body || Object.keys(req.body).length === 0) {
+                        return res.status(400).json({
+                                success: false,
+                                message: "Request body cannot be empty",
+                        });
+                }
                 const {id} = req.params;
-                const updatedTodo = Todo.findByIdAndUpdate(id, req.body, {
+
+                if (req.body.title) {
+                        req.body.slug = generateSlug(req.body.title);
+                }
+
+                const updatedTodo = await Todo.findByIdAndUpdate(id, req.body, {
                         new: true,
                         runValidators: true
                 })
+                console.log(updatedTodo)
                 if (!updatedTodo) {
                         return res.status(404).json({
                                 success: false,
@@ -81,7 +93,7 @@ exports.updateTodoById = async (req, res, next) => {
 exports.deleteTodoById = async (req, res, next) => {
         try {
                 const {id} = req.params;
-                const deleteTodo = Todo.findOneAndDelete(id)
+                const deleteTodo = await Todo.findOneAndDelete(id)
                 if (!deleteTodo) {
                         return res.status(404).json({
                                 success: false,

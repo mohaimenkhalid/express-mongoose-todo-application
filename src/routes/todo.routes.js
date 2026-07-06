@@ -9,7 +9,7 @@ router.route('/')
 
 router.route('/:id')
     .get(todoController.getTodoById)
-    .put(todoController.updateTodoById)
+    .patch(todoController.updateTodoById)
     .delete(todoController.deleteTodoById)
 
 
