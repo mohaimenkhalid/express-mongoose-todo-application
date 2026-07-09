@@ -24,6 +24,10 @@ const todoSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 })
 

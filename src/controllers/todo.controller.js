@@ -4,7 +4,12 @@ const generateSlug = require('../utils/slugify')
 
 exports.getTodos = async (req, res, next) => {
         try {
-                const todos = await Todo.find().select({
+                const todos = await Todo.find()
+                    .populate({
+                            path: 'createdBy',
+                            select: "-__v -status"
+                    })
+                    .select({
                         __v: 0
                 });
                 //.select("-__v") shorthand
@@ -22,6 +27,7 @@ exports.createTodos = async (req, res, next) => {
         try {
                 const newTodo = new Todo(req.body);
                 newTodo.slug = generateSlug(newTodo.title)
+                newTodo.createdBy = req.user.userId;
                 const savedTodo = await newTodo.save();
                 return res.status(201).json({
                         success: true,
